@@ -1,81 +1,46 @@
-# C++ File Compressor (Huffman Coding)
+# File Compressor using Huffman Coding
 
-Lossless file compression and decompression using Huffman Coding. Compressed files use the `.rsk` extension, and decompression restores the original file extension. Built as a student project for learning purposes.
+
+This project implements file compression and decompression using a combination of Burrows-Wheeler Transform (BWT), Move-To-Front (MTF) encoding, and Huffman Coding in C++. This multi-stage approach efficiently reduces file sizes by transforming and encoding data based on character patterns and frequency, making it ideal for compressing large text files.
 
 ## Features
-- Lossless compression using Huffman Coding, Burrows–Wheeler Transform (BWT) and Move-to-Front (MTF) encoding
-- Stores original file extension in the compressed file; restores on decompress
-- Works with text and binary files
-- Simple CLI: compress (`-c`) or decompress (`-d`)
+- Compresses text files using Burrows-Wheeler Transform (BWT), Move-To-Front (MTF), and Huffman Coding
+- Decompresses files back to their original content
+- Handles large files efficiently
+- Modular C++ codebase with clear separation of logic
 
-## Project Structure
-- `main.cpp`: Program entry and argument handling
-- `compressor.h` / `compressor.cpp`: Compression pipeline
-- `decompressor.h` / `decompressor.cpp`: Decompression pipeline
-- `huffmanTree.h` / `huffmanTree.cpp`: Huffman tree and code generation
-- Sample files: `test.txt`, `test.rsk`, `bigfile.txt`, etc.
-
-## Build
-Requires a C++17 compiler (GCC, Clang, or MSVC). Example commands:
-
-- Windows (MinGW/MSYS2 or similar):
-```powershell
-g++ -std=c++17 -O2 main.cpp compressor.cpp decompressor.cpp huffmanTree.cpp -o main.exe
-```
-
-- Linux/macOS:
-```bash
-g++ -std=c++17 -O2 main.cpp compressor.cpp decompressor.cpp huffmanTree.cpp -o main
-```
+## File Structure
+- `compressor.cpp`, `compressor.h`: Compression logic (BWT, MTF, Huffman Coding)
+- `decompressor.cpp`, `decompressor.h`: Decompression logic (inverse BWT, inverse MTF, Huffman Decoding)
+- `huffmanTree.cpp`, `huffmanTree.h`: Huffman tree implementation
+- `main.cpp`: Entry point for running compression/decompression
+- `bigfile.txt`: Example input file
+- `bigfile.rsk`: Example compressed file
+- `decompressed_bigfile.txt`: Example decompressed output
 
 ## Usage
-- Compress a file:
-	- Windows:
-		```powershell
-		.\main.exe <input-file> -c
-		```
-	- Linux/macOS:
-		```bash
-		./main <input-file> -c
-		```
-	Output: `<input-file>` is compressed to `<name>.rsk`.
+1. **Build the project**
+   - Use a C++ compiler (e.g., g++) to compile all `.cpp` files.
+   - Example:
+     ```sh
+     g++ -o file_compressor main.cpp compressor.cpp decompressor.cpp huffmanTree.cpp
+     ```
+2. **Compress a file**
+   - Run the executable and follow prompts to select compression.
+3. **Decompress a file**
+   - Run the executable and follow prompts to select decompression.
 
-- Decompress a file:
-	- Windows:
-		```powershell
-		.\main.exe <name>.rsk -d
-		```
-	- Linux/macOS:
-		```bash
-		./main <name>.rsk -d
-		```
-	Output: Restores the original extension (e.g., `test.rsk` → `test.txt`).
 
-### Examples
-```powershell
-# Windows examples
-.\main.exe test.txt -c        # produces test.rsk
-.\main.exe test.rsk -d        # restores test.txt
+## Compression Pipeline
+This project uses a three-stage compression pipeline:
 
-.\main.exe compressor.rsk -d  # decompress provided sample
-```
-```bash
-# Linux/macOS examples
-./main test.txt -c
-./main test.rsk -d
-```
+1. **Burrows-Wheeler Transform (BWT):** Rearranges the input data to group similar characters together, making it more amenable to further compression.
+2. **Move-To-Front (MTF) Encoding:** Converts sequences of repeated characters into sequences of small integers, further increasing compressibility.
+3. **Huffman Coding:** Assigns shorter codes to more frequent symbols and longer codes to less frequent ones, reducing the overall file size without losing information.
 
-## How It Works (Brief)
-1. Frequency analysis of input bytes
-2. Apply Burrows–Wheeler Transform (BWT), then Move-to-Front (MTF)
-3. Build Huffman tree and derive prefix codes over the MTF output
-4. Write a compact header (original extension + BWT index + metadata) and the encoded bitstream to `.rsk`
-5. Decompression decodes Huffman to recover the MTF sequence, applies inverse BWT, and restores the original data
+Each stage contributes to improved compression efficiency, especially for large text files with repeating patterns.
 
-## BWT and MTF
-- **Burrows–Wheeler Transform (BWT):** Rearranges input to cluster identical/similar symbols, creating longer runs and improving locality.
-- **Move-to-Front (MTF):** After BWT, maps symbols to indices in a dynamic list, yielding many small numbers that Huffman encodes efficiently.
-- **Benefit:** For natural-language text and similar data, applying BWT + MTF before Huffman often improves compression ratio over Huffman alone.
-- **Status:** Implemented in this codebase; applied before Huffman to improve compression.
+## License
+This project is for educational purposes.
 
 
